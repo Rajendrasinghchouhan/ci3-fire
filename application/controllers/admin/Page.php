@@ -193,7 +193,7 @@ class Page extends Admin_Controller {
 	}
 
 	function page_list()
-     {
+     { 
      	$list = $this->page_model->get_page();
      	$data = array();
         $no = $_POST['start'];
