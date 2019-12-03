@@ -45,7 +45,7 @@ $(document).ready(function() {
 
     
     var myDropzone = $("#imageupload").dropzone({ 
-        url: "uploadfile",
+        url: BASE_URL+"admin/page/uploadfile",
         maxFilesize: 5,
         maxFiles: 5,
         renameFile: function(file) {
@@ -64,8 +64,8 @@ $(document).ready(function() {
             //console.log(name);
             $.ajax({
                 type: 'POST',
-                url: 'deletefile',
-                data: {filename: name,'_token': '{{ csrf_token() }}' },
+                url: BASE_URL+'admin/page/deletefile',
+                data: {filename: name },
             
                 success: function (data){
 
@@ -175,9 +175,45 @@ $(document).ready(function() {
 })
 
  function convertToSlug(Text)
-{
+{   
     return Text
         .toLowerCase()
         .replace(/ /g,'-')
         //.replace(/[^\w-]+/g,'')
 }
+
+$('.remove_img_btn').on('click',function(e)
+{   
+    e.preventDefault();
+
+    var imgName = $(this).data('uploadimg');
+    var id = $(this).data('id');
+    //console.log(imgName);
+    $.ajax({
+        url:BASE_URL+"admin/page/updatedDelete",
+        type:"POST",
+        data:{filename:imgName,id:id},
+        success: function (response){
+
+            //$('.editImage').remove();
+            response = JSON.parse(response);
+            console.log(response);
+            var page_img = $("#page_images").val();
+            if(page_img.indexOf(','+response.name) != -1)
+            {
+                var setimgValue = page_img.replace(','+response.name,'');
+            }
+            else
+            {
+                var setimgValue = page_img.replace(response.name,'');
+            }   
+
+            $("#page_images").val('');
+            $("#page_images").val(setimgValue);
+
+        },
+        error: function(e){
+
+        },  
+    });    
+});

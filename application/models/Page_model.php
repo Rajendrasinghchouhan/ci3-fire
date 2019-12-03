@@ -82,12 +82,44 @@ class Page_model extends CI_Model {
     function parentpage()
     {
      	return $this->db->select('id, page_title')
-     	->get('page')->result_array();	
+     	->get('page')->result_array();
     }
 
     function getfetch($id)
     {
     	return $this->db->where('id',$id)
     	->get('page')->row_array();
+    }
+
+    function update($data,$id)
+    {
+        $this->db->where('id',$id)
+        ->update('page',$data);
+    }
+
+    function getimage($id)
+    {
+        return $this->db->where('id',$id)
+        ->get('page')->row('page_image');
+    }
+
+    function delete($id)
+    {
+        $this->db->where('id',$id)
+        ->delete('page');
+    }
+
+    function checkimg($id)
+    {
+        return $this->db->select('page_image')
+        ->where('id',$id)
+        ->get('page')->row_array();
+    }
+
+    function fileupdate($id,$imgfield)
+    {
+        $this->db->set('page_image',$imgfield)
+        ->where('id',$id)
+        ->update('page');
     }
 }

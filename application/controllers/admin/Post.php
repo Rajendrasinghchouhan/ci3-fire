@@ -21,7 +21,7 @@ class Post extends Admin_Controller {
 		$this->load->library('form_validation');
         // set constants
         define('REFERRER', "referrer");
-        define('THIS_URL', base_url('admin/post'));
+        define('THIS_URL', base_url('admin/post')); 
         define('DEFAULT_LIMIT', $this->settings->per_page_limit);
         define('DEFAULT_OFFSET', 0);
         define('DEFAULT_SORT', "last_name");

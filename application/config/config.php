@@ -442,6 +442,7 @@ $config['csrf_exclude_uris'] = array(
     'admin/page/uploadfile',
     'admin/page/deletefile',
     'admin/page/page_list',
+    'admin/page/updatedDelete',
 );
 
 /*

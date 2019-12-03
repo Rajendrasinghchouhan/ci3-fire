@@ -58,7 +58,7 @@ class Page extends Admin_Controller {
 
     function form($id=NULL)
     {	//$files = $_FILES['image_upload']['name'];
-    	$fetchData = "";
+    	$fetchData = "";$fielderror="";
     	if($id)
     	{
     		$fetchData = $this->page_model->getfetch($id);
@@ -87,7 +87,9 @@ class Page extends Admin_Controller {
 			}
 			if($this->input->post('update'))
 			{
-
+				$this->page_model->update($content,$id);
+				$this->session->set_flashdata('success', 'Page Updated Successfully !');
+				redirect(base_url('admin/page'));
 			}
 		}
 		else
@@ -109,7 +111,7 @@ class Page extends Admin_Controller {
             'fetchData' => $fetchData,
             'fielderror' => $fielderror,
         );
-
+        
         // load views
         $data['content'] = $this->load->view('admin/page/form', $content_data, TRUE);
         $this->load->view($this->template, $data);
@@ -142,12 +144,14 @@ class Page extends Admin_Controller {
 
 	  return $text;
 	}
+
 	function uploadfile()
-	{
+	{	//print_r($_FILES);exit;
 		$image = array();
 		//$new_name = time().$_FILES;
 		$name = $_FILES['file']['name'];
 		//print_r($name);exit;
+		
 		$config['upload_path'] = FCPATH . "assets\images\page_image";
 		$config['allowed_types'] = 'gif|jpg|png|bmp|jpeg';
 		//$confi['']
@@ -198,15 +202,17 @@ class Page extends Admin_Controller {
      	$data = array();
         $no = $_POST['start'];
         foreach ($list as $page) 
-        {
+        {	
             $no++;
             $row = array();
             $row[] = $no;
             $row[] = ucfirst($page->page_title);
             $row[] = ucfirst($page->page_description);
-            if($page->page_image)
-            {
-            	$row[] = "<img src='".base_url('assets/images/page_image/'.$page->page_image)."' style='width:60px;height:60px;border-radius:100%;'>";
+            $split = explode(",",$page->page_image);
+            //print_r($split);exit;
+            if(!empty($split[0]))
+            {	
+            	$row[] = "<img src='".base_url('assets/images/page_image/'.$split[0])."' style='width:60px;height:60px;border-radius:100%;'>";
             }
             else
             {
@@ -226,7 +232,7 @@ class Page extends Admin_Controller {
             $row[] = ucfirst($statusName);
             $row[] = date("Y-M-d",strtotime($page->page_added));
             $row[] = '<a  href="'.base_url("admin/page/form/".$page->id).'" data-toggle="modal" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-pencil"></span></a> 
-            		<a onClick="return confirm(\'Are you sure want to Delete ! \')" href="'.base_url("admin/page/delete/".$page->id).'" data-toggle="modal" class="btn btn-danger btn-xs" ><span class="glyphicon glyphicon-trash"></span></a>';
+            		<a onclick="return confirm(\'Are you sure want to Delete ! \')" href="'.base_url("admin/page/delete/".$page->id).'" data-toggle="modal" class="btn btn-danger btn-xs" ><span class="glyphicon glyphicon-trash"></span></a>';
  
             $data[] = $row;
         }
@@ -239,5 +245,46 @@ class Page extends Admin_Controller {
                 );
         //output to json format
         echo json_encode($output);
+     }
+
+      function delete($id=NULL)
+     {	
+     	$findImage = $this->page_model->getimage($id);
+     	//print_r($findImage);exit;
+     	if(!empty($findImage))
+     	{
+     		$path = FCPATH . "assets/images/page_image/$findImage";
+			//print_r($path);die;
+			unlink($path);
+     	}
+     	$this->page_model->delete($id);
+     	$this->session->set_flashdata('success', 'Page Deleted Successfully !');
+		redirect(base_url('admin/page'));
+     }
+
+     function updatedDelete()
+     {
+     	$fileName = $_POST['filename'];
+     	$fileid = $_POST['id'];
+     	
+     	$path = FCPATH . "assets\images\page_image\\".$fileName;
+     	//unlink($path);
+     	$imgName = $this->page_model->checkimg($fileid);
+     	//print_r($imgName);exit;
+ 		$matchstring = strcmp($fileName, $imgName['page_image']);
+ 		print_r($matchstring);exit;
+ 		if($matchstring!==0)
+ 		{
+ 			$replaceimg = str_replace(search, replace, subject);
+ 		}
+     	
+     	$updateimagefield = $this->input->post('page_images');
+     	//$this->page_model->fileupdate($fileid,$updateimagefield);
+		$success = array(
+            'status'=>true,
+            'messages'=>'image Deleted Success',
+            'name' => $fileName,
+        	); 
+        echo json_encode($success);
      }
 }

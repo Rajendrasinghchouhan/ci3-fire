@@ -24,13 +24,26 @@
         <?php echo form_textarea($field_data); ?>
 	</div>    
 	<div class="form-group col-sm-12">
-		<?php echo form_label(lang('page input pageimage'), 'pageimage', array('class'=>'control-label')); ?><br/>
-		
+		<?php echo form_label(lang('page input pageimage'), 'pageimage', array('class'=>'control-label clear')); ?><br/>
         <div class="dropzone clsbox" id="imageupload">
 
         </div>
 	</div>
-	<input type="hidden" name="page_images" id="page_images">
+		<?php
+			if(isset($fetchData['id']))
+			{
+				$break_image = explode(',', $fetchData['page_image']);
+	       		if(!empty($break_image)) { 
+	       		 	foreach($break_image as $key => $imgvalue ) { ?>
+		       		<div class="col-sm-1">
+		       			<div class="editImage"> 		
+		        			<img src="<?php echo base_url('assets/images/page_image/'.$imgvalue)?>"><br/>
+		        			<button type="button" data-uploadimg="<?php echo $imgvalue; ?>" data-id="<?php echo $fetchData['id'];?>" class="btn btn-dark remove_img_btn">Delete</button>
+		        		</div>	
+		        	</div>
+        <?php } } }?>
+	<?php $populateData = (!empty($fetchData['page_image']) && isset($fetchData['page_image']) ? $fetchData['page_image'] : '');?>
+	<input type="hidden" name="page_images" id="page_images" value="<?=$populateData?>">
 	<div class="form-group col-sm-12">
 		<?php echo form_label(lang('page input pageselect'), 'pageselect', array('class'=>'control-label')); ?><br/>
 		<?php $populateData = (!empty($fetchData['parent_page']) && isset($fetchData['parent_page']) ? $fetchData['parent_page'] : (!empty($this->input->post('parentpage')) ? $this->input->post('parentpage') : '')); ?>
@@ -99,6 +112,3 @@
 	    <input type="submit" name="<?php echo $saveUpdate;?>" class="btn btn-success" value="<?php echo ucfirst($saveUpdate);?>">
 	</div>
 <?php echo form_close(); ?>
-
-
-
