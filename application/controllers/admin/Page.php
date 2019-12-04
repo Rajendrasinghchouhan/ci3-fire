@@ -57,14 +57,14 @@ class Page extends Admin_Controller {
     }
 
     function form($id=NULL)
-    {	//$files = $_FILES['image_upload']['name'];
+    {	
     	$fetchData = "";$fielderror="";
     	if($id)
     	{
     		$fetchData = $this->page_model->getfetch($id);
     	}
     	$title = $this->page_model->parentpage();
-		//print_r($title);exit;
+		//p($title);
     	$this->form_validation->set_rules('pagetitle', 'Title', 'trim|required');
     	$this->form_validation->set_rules('status', 'Status', 'required');
 
@@ -106,7 +106,7 @@ class Page extends Admin_Controller {
 		}
 		$data = $this->includes;
         $content_data = array(
-            'parentTitle'   => $title,
+            'parentTitle'   => $title, 
             'cancel_url' => "/ci3-fire/admin/page",
             'fetchData' => $fetchData,
             'fielderror' => $fielderror,
@@ -262,29 +262,28 @@ class Page extends Admin_Controller {
 		redirect(base_url('admin/page'));
      }
 
-     function updatedDelete()
-     {
+    function updatedDelete()
+    {
      	$fileName = $_POST['filename'];
      	$fileid = $_POST['id'];
-     	
      	$path = FCPATH . "assets\images\page_image\\".$fileName;
-     	//unlink($path);
+     	unlink($path);
      	$imgName = $this->page_model->checkimg($fileid);
-     	//print_r($imgName);exit;
- 		$matchstring = strcmp($fileName, $imgName['page_image']);
- 		print_r($matchstring);exit;
- 		if($matchstring!==0)
- 		{
- 			$replaceimg = str_replace(search, replace, subject);
- 		}
-     	
-     	$updateimagefield = $this->input->post('page_images');
-     	//$this->page_model->fileupdate($fileid,$updateimagefield);
+
+     	if(strpos($imgName['page_image'] , $fileName.','))
+     	{
+     		$result = str_replace($fileName.',', '', $imgName['page_image']);
+     	}
+     	else
+     	{
+			$result = str_replace(','.$fileName, "", $imgName['page_image']);	    		
+     	}
+     	$this->page_model->fileupdate($fileid,$result);
 		$success = array(
             'status'=>true,
             'messages'=>'image Deleted Success',
             'name' => $fileName,
         	); 
         echo json_encode($success);
-     }
+    }
 }

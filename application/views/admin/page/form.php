@@ -1,5 +1,5 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');?>
-
+	
 <?php echo form_open_multipart('', array('role'=>'form')); ?>
 
 <div class="row">    
@@ -36,10 +36,12 @@
 	       		if(!empty($break_image)) { 
 	       		 	foreach($break_image as $key => $imgvalue ) { ?>
 		       		<div class="col-sm-1">
-		       			<div class="editImage"> 		
+		       			<?php if(!empty($imgvalue)){ ?>
+		       			<div class="editImage"> 
 		        			<img src="<?php echo base_url('assets/images/page_image/'.$imgvalue)?>"><br/>
 		        			<button type="button" data-uploadimg="<?php echo $imgvalue; ?>" data-id="<?php echo $fetchData['id'];?>" class="btn btn-dark remove_img_btn">Delete</button>
-		        		</div>	
+		        		</div>
+		        		<?php } else {}?>	
 		        	</div>
         <?php } } }?>
 	<?php $populateData = (!empty($fetchData['page_image']) && isset($fetchData['page_image']) ? $fetchData['page_image'] : '');?>

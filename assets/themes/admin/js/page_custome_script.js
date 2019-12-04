@@ -193,9 +193,7 @@ $('.remove_img_btn').on('click',function(e)
         url:BASE_URL+"admin/page/updatedDelete",
         type:"POST",
         data:{filename:imgName,id:id},
-        success: function (response){
-
-            //$('.editImage').remove();
+        success: function (response){ 
             response = JSON.parse(response);
             console.log(response);
             var page_img = $("#page_images").val();
@@ -215,5 +213,6 @@ $('.remove_img_btn').on('click',function(e)
         error: function(e){
 
         },  
-    });    
+    }); 
+       $(this).parents('.editImage').remove();
 });

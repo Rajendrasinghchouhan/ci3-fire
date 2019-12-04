@@ -120,6 +120,6 @@ class Page_model extends CI_Model {
     {
         $this->db->set('page_image',$imgfield)
         ->where('id',$id)
-        ->update('page');
+        ->update('page');       
     }
 }
